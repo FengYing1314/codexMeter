@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+.idea/
+.vscode/
+.env
+.env.*
+!.env.example
+auth.json
+*.log
+work/
+dist/
