@@ -30,7 +30,7 @@ PluginSettings {
     StyledText {
         width: parent.width
         wrapMode: Text.Wrap
-        text: "显示当前 Codex 账号的已用额度。点击顶栏可查看剩余比例、重置时间和额外模型额度，也可以随时手动刷新。"
+        text: "显示当前 Codex 账号的已用额度和本周期重置时间，并补充公开重置排期。点击顶栏可查看剩余比例、额外模型额度及排期范围，也可以随时手动刷新。"
         color: Theme.surfaceVariantText
     }
 }
