@@ -2,6 +2,7 @@ import QtQuick
 import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
+import "compat"
 
 PluginSettings {
     id: settings
@@ -14,7 +15,7 @@ PluginSettings {
         color: Theme.surfaceText
         font.pixelSize: Theme.fontSizeLarge
     }
-    DankDropdown {
+    CompatDropdown {
         text: "自动刷新间隔"
         description: "选择用量面板自动更新的频率"
         options: settings.intervalLabels

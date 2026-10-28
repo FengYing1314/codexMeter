@@ -2,7 +2,7 @@
   "id": "codexMeter",
   "name": "Codex 用量",
   "description": "在 DankBar 中查看 Codex 额度、剩余比例、重置时间和公开排期",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "FengYing1314",
   "icon": "data_usage",
   "type": "widget",

@@ -1,6 +1,6 @@
 # Codex Meter
 
-在 DankMaterialShell 顶栏查看 Codex 账号额度、剩余比例与重置时间。
+在 Dux Shell（DMS 2.0，原 DankMaterialShell）顶栏查看 Codex 账号额度、剩余比例与重置时间，同时保留 DMS 1.6 兼容。
 
 [GitHub](https://github.com/FengYing1314/codexMeter) · [MIT 许可证](LICENSE) · [参与贡献](CONTRIBUTING.md)
 
@@ -19,12 +19,13 @@
 
 ## 环境要求
 
-- Linux / Wayland，已运行 DankMaterialShell 和 Quickshell。
+- Linux / Wayland，已运行 DMS 1.6 或 Dux Shell 2.0 和 Quickshell。
 - Python 3.11 或更高版本，无需安装额外 Python 包。
 - 已在 Codex 中登录 ChatGPT 账号。API Key 登录不适用于账号额度查询。
 - 官方 Codex CLI 用于处理需要刷新的登录状态，需能从 DMS 进程的环境中找到。
 
-已在 Fedora 44、DMS 1.6.0 和 Niri 26.04 环境验证。其他发行版及合成器尚未实测。
+已在 Fedora 44 / DMS 1.6.0，以及 CachyOS / Dux Shell 2.0.0 的 Niri 26.04 环境验证。
+DMS 2.0 使用原生控件，旧版保留兼容路径；其他发行版及合成器尚未实测。
 
 ## 安装
 
@@ -34,8 +35,14 @@ cd codexMeter
 sh install.sh
 ```
 
-安装脚本会把当前仓库链接到 `${XDG_CONFIG_HOME:-~/.config}/DankMaterialShell/plugins/codexMeter`。
-它不会覆盖已有安装。请保留仓库目录，移动或删除它会使安装链接失效。
+安装脚本通过 `dms version` 选择配置目录，将当前仓库链接到：
+
+- DMS 2.x：`${XDG_CONFIG_HOME:-~/.config}/dms/plugins/codexMeter`。
+- DMS 1.x：`${XDG_CONFIG_HOME:-~/.config}/DankMaterialShell/plugins/codexMeter`。
+
+找不到 `dms` 时默认使用 2.x 目录；版本查询失败或无法识别时会停止安装。
+也可以显式指定目标版本，例如旧版环境使用 `sh install.sh --dms-major 1`。
+安装不会覆盖已有目标，也不会删除旧版目录中的链接或迁移插件设置。请保留仓库目录，移动或删除它会使安装链接失效。
 
 然后：
 
@@ -47,7 +54,10 @@ sh install.sh
 
 ```sh
 dms ipc call plugin-scan scan
+dms ipc call plugins enable codexMeter
 ```
+
+DMS 2.0 支持热加载，无需重启整个桌面 Shell。插件在顶栏配置中的组件 ID 为 `codexMeter`；多屏环境可以只加入主屏。
 
 ## 配置
 
@@ -61,7 +71,7 @@ dms ipc call plugin-scan scan
 | --- | --- | --- |
 | `CODEX_HOME` | Codex 配置及登录目录 | `~/.codex` |
 | `CODEX_METER_CLI` | 官方 Codex 可执行文件绝对路径，可选 | 自动查找 |
-| `XDG_CONFIG_HOME` | 安装脚本使用的配置根目录 | `~/.config` |
+| `XDG_CONFIG_HOME` | 安装配置根目录，脚本按 DMS 主版本选择其下的插件目录 | `~/.config` |
 | `XDG_CACHE_HOME` | 查询缓存根目录 | `~/.cache` |
 
 CLI 优先使用 `CODEX_METER_CLI`，然后从 `PATH` 查找；同时兼容 Linux 桌面应用的捆绑安装路径。详细流程见 [工作方式](docs/architecture.md)。
@@ -74,13 +84,19 @@ CLI 优先使用 `CODEX_METER_CLI`，然后从 `PATH` 查找；同时兼容 Linu
 dms ipc call plugins reload codexMeter
 ```
 
+DMS 2.0 更新后若仍显示旧的加载错误，可重新扫描该插件以清除组件缓存：
+
+```sh
+dms ipc call plugin-scan rescan codexMeter
+```
+
 卸载前先从 DankBar 移除组件，并在插件设置中禁用它。使用安装脚本安装时，只需删除链接：
 
 ```sh
-unlink "${XDG_CONFIG_HOME:-$HOME/.config}/DankMaterialShell/plugins/codexMeter"
+unlink "${XDG_CONFIG_HOME:-$HOME/.config}/dms/plugins/codexMeter"
 ```
 
-此操作不会删除源码或 Codex 登录状态。
+上例适用于 DMS 2.x；1.x 将路径中的 `dms` 换成 `DankMaterialShell`。以安装脚本输出的链接路径为准。此操作不会删除源码或 Codex 登录状态。
 
 ## 常见问题
 
@@ -108,12 +124,13 @@ sh -n install.sh
 python3 -m json.tool plugin.json > /dev/null
 ```
 
-测试使用合成数据和临时目录，不需要真实账号或网络访问。更多说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+测试使用合成数据和临时目录，不需要真实账号或网络访问。安装测试隔离 DMS 命令与用户配置；控件兼容测试使用 Qt 6 `qml` 工具离屏运行，工具缺失时会明确跳过该组。更多说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ```text
 .
 ├── Meter.qml              # 顶栏与额度面板
 ├── Settings.qml           # 插件设置
+├── compat/                # DMS 2.0 原生控件与 1.6 兼容适配
 ├── collect.py             # 额度采集
 ├── plugin.json            # DMS 清单
 ├── install.sh             # 安装脚本

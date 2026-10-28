@@ -5,6 +5,7 @@ import Quickshell.Io
 import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
+import "compat"
 
 PluginComponent {
     id: meter
@@ -201,7 +202,7 @@ PluginComponent {
     horizontalBarPill: Component {
         Row {
             spacing: 7
-            DankIcon {
+            CompatIcon {
                 name: meter.problem ? "cloud_off" : "data_usage"
                 size: 16
                 color: meter.problem ? Theme.error : meter.accent
@@ -237,7 +238,7 @@ PluginComponent {
     verticalBarPill: Component {
         Column {
             spacing: 3
-            DankIcon {
+            CompatIcon {
                 name: meter.problem ? "cloud_off" : "data_usage"
                 size: 16
                 color: meter.accent
@@ -302,7 +303,7 @@ PluginComponent {
             showCloseButton: true
             spacing: 12
             headerActions: Component {
-                DankActionButton {
+                CompatActionButton {
                     iconName: "refresh"
                     tooltipText: meter.busy ? "正在刷新" : "刷新用量"
                     enabled: !meter.busy
@@ -467,7 +468,7 @@ PluginComponent {
                         topPadding: 20
                         bottomPadding: 24
                         spacing: 12
-                        DankIcon {
+                        CompatIcon {
                             anchors.horizontalCenter: parent.horizontalCenter
                             name: meter.busy ? "hourglass_top" : "cloud_off"
                             size: 32
@@ -521,7 +522,7 @@ PluginComponent {
                                             font.pixelSize: Theme.fontSizeSmall
                                             color: Theme.surfaceVariantText
                                         }
-                                        DankIcon {
+                                        CompatIcon {
                                             anchors.right: parent.right
                                             anchors.rightMargin: 4
                                             anchors.verticalCenter: parent.verticalCenter
@@ -658,7 +659,7 @@ PluginComponent {
                     x: 12
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 8
-                    DankIcon { name: "confirmation_number"; size: 17; color: Theme.primary }
+                    CompatIcon { name: "confirmation_number"; size: 17; color: Theme.primary }
                     StyledText { text: "可用重置券"; font.pixelSize: Theme.fontSizeSmall; color: Theme.surfaceText }
                 }
                 StyledText {

@@ -6,6 +6,14 @@
 
 当前额度窗口的 `reset_at` 是账号自己的重置时间，面板以它判断本周期是否预计刷新。采集器另会匿名请求 `https://didcodexreset.com/openapi/v1/records/latest?kind=all` 获取额外公开排期。该请求不携带 Codex 令牌、Cookie 或账号标识，超时为 5 秒，响应上限为 512 KiB。`kind=reset_scheduled` 且 `scheduleState=pending` 的记录作为待执行排期；若状态为 `elapsed`，且排期窗口结束未满 3 小时，则标为“尚未确认”的重置信号，3 小时后不再显示。`schedulePrecision`、`scope`、`confidence` 和 `scheduleBasis` 规范化后交给面板。
 
+## DMS 版本兼容
+
+安装脚本用 `dms version` 选择 2.x 的 `dms/plugins/` 或 1.x 的 `DankMaterialShell/plugins/`，均位于 XDG 配置根目录下。`--dms-major` 可显式选择版本，安装只创建源码链接，不改桌面设置或删除旧目标。
+
+界面通过 `compat/` 中的小型控件转发实际使用的属性与信号。DMS 2.0 动态加载 `qs.DCommon.Widgets` 的原生控件；只有整个模块不存在时才回退旧版 `qs.Widgets`，避免触发 2.0 的旧控件弃用提示。现代控件自身的依赖或类型错误继续报错，不会被回退掩盖。采集器与额度缓存逻辑不依赖该控件选择。
+
+## 认证查询
+
 采集器读取 `CODEX_HOME/auth.json`，默认目录为 `~/.codex`。
 令牌有效时直接查询 `https://chatgpt.com/backend-api/wham/usage`，超时为 30 秒。请求保留 TLS 验证，不跟随重定向，也不使用 Cookie。
 
